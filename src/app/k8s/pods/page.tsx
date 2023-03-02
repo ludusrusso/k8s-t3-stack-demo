@@ -15,7 +15,7 @@ import YAML from "yaml";
 export default function Page() {
   const openDialog = useDialogStore((state) => state.setDialog);
   const res = reactApi.k8s.getPods.useQuery({
-    namespace: "fy",
+    namespace: "react-milano-demo",
   });
 
   if (res.isLoading) {
@@ -54,6 +54,12 @@ const SeeDialog = ({ pod }: { pod: IoK8sApiCoreV1Pod }) => {
 };
 
 const DeleteDialog = ({ pod }: { pod: IoK8sApiCoreV1Pod }) => {
+  const closeDialog = useDialogStore((state) => state.closeDialog);
+  const deleteMut = reactApi.k8s.deletePod.useMutation({
+    onSuccess: () => {
+      closeDialog();
+    },
+  });
   const name = pod.metadata?.name || "";
   const namespace = pod.metadata?.namespace || "";
 
@@ -69,7 +75,12 @@ const DeleteDialog = ({ pod }: { pod: IoK8sApiCoreV1Pod }) => {
       >
         Delete Pod {name}
       </Dialog.Title>
-      <Form schema={CheckSchema} onSubmit={async (value) => {}}>
+      <Form
+        schema={CheckSchema}
+        onSubmit={async () => {
+          await deleteMut.mutateAsync({ name, namespace });
+        }}
+      >
         {({ handleSubmit, submitting, invalid, submitErrors }) => (
           <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             <TextField label={`Type \`${name}\` to procede`} name="check" />

@@ -1,4 +1,18 @@
-# Create T3 App
+# K8s UI STACK
+
+## How to generate code
+
+1. Expose kubrenetes api definition with openapi
+
+```bash
+$ kubectl proxy --port=8080
+```
+
+2. Generate api code with openapi-generator
+
+```bash
+$ openapi-generator generate -g typescript-node  -i http://localhost:8080/openapi/v3 -o src/gen
+```
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 

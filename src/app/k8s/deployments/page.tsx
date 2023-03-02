@@ -58,6 +58,13 @@ const SeeDialog = ({ deploy }: { deploy: IoK8sApiAppsV1Deployment }) => {
 };
 
 const DeleteDialog = ({ deploy }: { deploy: IoK8sApiAppsV1Deployment }) => {
+  const closeDialog = useDialogStore((state) => state.closeDialog);
+  const deleteMut = reactApi.k8s.deleteDeployment.useMutation({
+    onSuccess: () => {
+      closeDialog();
+    },
+  });
+
   const name = deploy.metadata?.name || "";
   const namespace = deploy.metadata?.namespace || "";
 
@@ -73,7 +80,15 @@ const DeleteDialog = ({ deploy }: { deploy: IoK8sApiAppsV1Deployment }) => {
       >
         Delete Deployment {name}
       </Dialog.Title>
-      <Form schema={CheckSchema} onSubmit={async (value) => {}}>
+      <Form
+        schema={CheckSchema}
+        onSubmit={async () => {
+          await deleteMut.mutateAsync({
+            name,
+            namespace,
+          });
+        }}
+      >
         {({ handleSubmit, submitting, invalid, submitErrors }) => (
           <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             <TextField label={`Type \`${name}\` to procede`} name="check" />
@@ -103,12 +118,18 @@ const DeleteDialog = ({ deploy }: { deploy: IoK8sApiAppsV1Deployment }) => {
 };
 
 const ScaleDialog = ({ deploy }: { deploy: IoK8sApiAppsV1Deployment }) => {
+  const closeDialog = useDialogStore((state) => state.closeDialog);
+  const scaleMut = reactApi.k8s.scaleDeployment.useMutation({
+    onSuccess: () => {
+      closeDialog();
+    },
+  });
   const name = deploy.metadata?.name || "";
   const namespace = deploy.metadata?.namespace || "";
   const replicas = deploy.spec?.replicas || 1;
 
   const CheckSchema = z.object({
-    replicas: z.number().min(0),
+    replicas: z.number().min(0).max(10),
   });
 
   return (
@@ -119,7 +140,13 @@ const ScaleDialog = ({ deploy }: { deploy: IoK8sApiAppsV1Deployment }) => {
       <Form
         schema={CheckSchema}
         initialValues={{ replicas }}
-        onSubmit={async (value) => {}}
+        onSubmit={async (value) => {
+          await scaleMut.mutateAsync({
+            name,
+            namespace,
+            replicas: value.replicas,
+          });
+        }}
       >
         {({ handleSubmit, submitting, invalid, submitErrors }) => (
           <form onSubmit={handleSubmit} className="mt-4 space-y-4">
