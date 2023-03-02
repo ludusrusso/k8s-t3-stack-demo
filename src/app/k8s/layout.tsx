@@ -1,16 +1,10 @@
 "use client";
 
+import { createReactCli, reactApi } from "@/utils/api";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink } from "@trpc/client";
 import { SessionProvider, signIn, useSession } from "next-auth/react";
 import { Suspense, useEffect, useState, type FC, type ReactNode } from "react";
-import superjson from "superjson";
-import { reactApi, createReactCli } from "@/utils/api";
 import { DialogProvider } from "./dialog";
-// import { DialogProvider } from "./dialog";
-// import { ErrorDialogProvider } from "./error.dialog";
-// import { SideBar } from "./sidebar";
-// import { ToolBar } from "./toolbar";
 
 const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const [queryClient] = useState(() => new QueryClient());
