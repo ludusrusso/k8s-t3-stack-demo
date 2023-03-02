@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: react-milano-demo
+  name: react-milano-demo
+  namespace: react-milano-demo
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: react-milano-demo
+  template:
+    metadata:
+      labels:
+        app: react-milano-demo
+    spec:
+      containers:
+      - image: containous/whoami
+        name: whoami
+        ports:
+        - containerPort: 80
+          protocol: TCP
+          name: http
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 200m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: react-milano-demo
+  name: react-milano-demo
+  namespace: react-milano-demo
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: http
+  selector:
+    app: react-milano-demo
