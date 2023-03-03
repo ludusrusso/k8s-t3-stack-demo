@@ -1,5 +1,10 @@
 # K8s UI STACK
 
+This is a pair repo of my talk @ ReactJS Milano about Kubernetes and T3 Stack.
+
+- [Video Recording](https://www.youtube.com/watch?v=Q2__JCb_euM)
+- [Slides](./slides/t3%20%2B%20kube.pdf)
+
 ## How to generate code
 
 1. Expose kubrenetes api definition with openapi
